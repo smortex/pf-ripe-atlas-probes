@@ -45,12 +45,9 @@ function callback(data) {
     };
     L.control.layers(baseMaps, {}).addTo(mymap);
 
-    var lat_min = Math.min(...places.map(function (x) { return x.getLatLng().lat; }))
-    var lat_max = Math.max(...places.map(function (x) { return x.getLatLng().lat; }))
-    var lng_min = Math.min(...places.map(function (x) { return x.getLatLng().lng; }))
-    var lng_max = Math.max(...places.map(function (x) { return x.getLatLng().lng; }))
-
-    mymap.fitBounds([[lat_min, lng_min], [lat_max, lng_max]]);
+    a = [-24.806681, -156.577148]
+    b = [-6.904614, -132.93457]
+    mymap.fitBounds([a, b]);
 }
 
 var script = document.createElement('script');
