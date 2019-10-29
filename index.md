@@ -6,6 +6,31 @@ layout: default
 ---
 
 <script language="javascript">
+function probeId(probe) {
+    return probe['id'];
+}
+function probeRawTitle(probe) {
+    return "Probe #" + probeId(probe);
+}
+function probeTitle(probe) {
+    if (probe['description']) {
+        return probe['description'] + " (" + probeRawTitle(probe) + ")";
+    } else {
+        return probeRawTitle(probe);
+    }
+}
+function probeUri(probe) {
+    return 'https://atlas.ripe.net/probes/' + probe['id'] + '/';
+}
+function probeStatus(probe) {
+    return "Status: " + probe['status']['name'];
+}
+function probeLink(probe) {
+    return '<a href="' + probeUri(probe) + '" target="_blank">' + probeRawTitle(probe) + ' page on RIPE Atlas</a>';
+}
+function probePopup(probe) {
+    return '<strong>' + probeTitle(probe) + '</strong><br />' + probeStatus(probe) + '<br />' + probeLink(probe);
+}
 function callback(data) {
     var places = [];
 
@@ -27,7 +52,7 @@ function callback(data) {
             iconUrl: 'marker-inactive.png',
             shadowUrl: 'marker-shadow.png',});
 
-    places = data['results'].map(r => L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: (r['status']['id'] == '3' ? inactiveIcon : activeIcon) }).bindPopup('<strong>' + (r['description'] || "Probe #" + r['id']) + '</strong><br />Status: ' + r['status']['name'] + '<br /><a href="https://atlas.ripe.net/probes/' + r['id'] + '/">Jump to probe page</a>'));
+    places = data['results'].map(r => L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: (r['status']['id'] == '3' ? inactiveIcon : activeIcon) }).bindPopup(probePopup(r)));
 
     var osm          = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>' }),
         pirates      = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.pirates/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Pirates © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'}),
