@@ -54,17 +54,19 @@ function callback(data) {
 
     places = data['results'].map(r => L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: (r['status']['id'] == '3' ? inactiveIcon : activeIcon) }).bindPopup(probePopup(r)));
 
-    var osm          = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>' }),
+    var mapsurfer    = L.tileLayer('https://api.openrouteservice.org/mapsurfer/{z}/{x}/{y}.png?api_key={orskey}', {attribution: 'Map data © <a href="https://maps.openrouteservice.org/">GIScience Research Group @ Heidelberg University</a>', orskey: '5b3ce3597851110001cf6248e6eeebc5abbe4825b1b19b3a321b7a15'}),
+        osm          = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>' }),
         pirates      = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.pirates/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Pirates © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'}),
         highcontrast = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.high-contrast/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Mapbox High Contrast © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'})
         toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {attribution: 'Toner © <a href="https://maps.stamen.com/">Stamen Design</a>' })
             ;
 
     var layer = L.layerGroup(places);
-    var mymap = L.map('map', {layers: [highcontrast, layer]});
+    var mymap = L.map('map', {layers: [mapsurfer, layer]});
 
     L.control.scale({maxWidth: 300}).addTo(mymap);
     var baseMaps = {
+        "MapSurfer": mapsurfer,
         "Mapbox High Contrast": highcontrast,
         "OpenStreetMap France": osm,
         "Pirate": pirates,
