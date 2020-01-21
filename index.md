@@ -32,7 +32,8 @@ function probePopup(probe) {
     return '<strong>' + probeTitle(probe) + '</strong><br />' + probeStatus(probe) + '<br />' + probeLink(probe);
 }
 function callback(data) {
-    var places = [];
+    var active_probes = [];
+    var inactive_probes = [];
 
     var activeIcon = L.icon({
             iconSize:    [25, 41],
@@ -52,7 +53,13 @@ function callback(data) {
             iconUrl: 'marker-inactive.png',
             shadowUrl: 'marker-shadow.png',});
 
-    places = data['results'].map(r => L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: (r['status']['id'] == '3' ? inactiveIcon : activeIcon) }).bindPopup(probePopup(r)));
+    data['results'].forEach(r => {
+      if (r['status']['id'] == '3') {
+        inactive_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: inactiveIcon }).bindPopup(probePopup(r)));
+      } else {
+        active_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: activeIcon }).bindPopup(probePopup(r)));
+      }
+    })
 
     var mapsurfer    = L.tileLayer('https://api.openrouteservice.org/mapsurfer/{z}/{x}/{y}.png?api_key={orskey}', {attribution: 'Map data © <a href="https://maps.openrouteservice.org/">GIScience Research Group @ Heidelberg University</a>', orskey: '5b3ce3597851110001cf6248e6eeebc5abbe4825b1b19b3a321b7a15'}),
         osm          = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>' }),
@@ -61,8 +68,13 @@ function callback(data) {
         toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {attribution: 'Toner © <a href="https://maps.stamen.com/">Stamen Design</a>' })
             ;
 
-    var layer = L.layerGroup(places);
-    var mymap = L.map('map', {layers: [mapsurfer, layer]});
+
+    var markers_layer = L.markerClusterGroup();
+    var active_probes_layer = L.featureGroup.subGroup(markers_layer, active_probes);
+    var inactive_probes_layer = L.featureGroup.subGroup(markers_layer, inactive_probes);
+
+    markers_layer.addLayer(active_probes_layer, inactive_probes_layer);
+    var mymap = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer, inactive_probes_layer]});
 
     L.control.scale({maxWidth: 300}).addTo(mymap);
     var baseMaps = {
@@ -72,7 +84,7 @@ function callback(data) {
         "Pirate": pirates,
         "Toner": toner
     };
-    L.control.layers(baseMaps, {}).addTo(mymap);
+    L.control.layers(baseMaps, {'Active probes': active_probes_layer, 'Inactive probes': inactive_probes_layer}).addTo(mymap);
 
     a = [-24.806681, -156.577148]
     b = [-6.904614, -132.93457]
