@@ -53,11 +53,31 @@ function callback(data) {
             iconUrl: 'marker-inactive.png',
             shadowUrl: 'marker-shadow.png',});
 
+    var ambassadorProbeIcon = L.icon({
+      iconSize:    [25, 41],
+      iconAnchor:  [12, 41],
+      popupAnchor: [1, -34],
+      tooltipAnchor: [16, -28],
+      shadowSize:  [41, 41],
+      iconUrl: 'marker-ambassador.png',
+      shadowUrl: 'marker-shadow.png',
+    });
+
+    var ambassador_probe_ids = [
+      52614,
+      52814,
+      53286,
+    ];
+
     data['results'].forEach(r => {
       if (r['status']['id'] == '3') {
         inactive_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: inactiveIcon }).bindPopup(probePopup(r)));
       } else {
-        active_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: activeIcon }).bindPopup(probePopup(r)));
+        var icon = activeIcon;
+        if (ambassador_probe_ids.includes(probeId(r)))
+          icon = ambassadorProbeIcon;
+
+        active_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: icon }).bindPopup(probePopup(r)));
       }
     })
 
