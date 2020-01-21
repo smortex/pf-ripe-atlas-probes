@@ -35,76 +35,81 @@ function callback(data) {
     var active_probes = [];
     var inactive_probes = [];
 
-    var activeIcon = L.icon({
-            iconSize:    [25, 41],
-            iconAnchor:  [12, 41],
-            popupAnchor: [1, -34],
-            tooltipAnchor: [16, -28],
-            shadowSize:  [41, 41],
-            iconUrl: 'marker-active.png',
-            shadowUrl: 'marker-shadow.png',
-            });
-    var inactiveIcon = L.icon({
-            iconSize:    [25, 41],
-            iconAnchor:  [12, 41],
-            popupAnchor: [1, -34],
-            tooltipAnchor: [16, -28],
-            shadowSize:  [41, 41],
-            iconUrl: 'marker-inactive.png',
-            shadowUrl: 'marker-shadow.png',});
-
-    var ambassadorProbeIcon = L.icon({
-      iconSize:    [25, 41],
-      iconAnchor:  [12, 41],
-      popupAnchor: [1, -34],
-      tooltipAnchor: [16, -28],
-      shadowSize:  [41, 41],
-      iconUrl: 'marker-ambassador.png',
-      shadowUrl: 'marker-shadow.png',
+    var active_probe_icon = L.icon({
+        iconSize:      [25, 41],
+        iconAnchor:    [12, 41],
+        popupAnchor:   [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:    [41, 41],
+        iconUrl:       'marker-active.png',
+        shadowUrl:     'marker-shadow.png',
+    });
+    var inactive_probe_icon = L.icon({
+        iconSize:      [25, 41],
+        iconAnchor:    [12, 41],
+        popupAnchor:   [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:    [41, 41],
+        iconUrl:       'marker-inactive.png',
+        shadowUrl:     'marker-shadow.png',
+    });
+    var ambassador_probe_icon = L.icon({
+        iconSize:      [25, 41],
+        iconAnchor:    [12, 41],
+        popupAnchor:   [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:    [41, 41],
+        iconUrl:       'marker-ambassador.png',
+        shadowUrl:     'marker-shadow.png',
     });
 
     var ambassador_probe_ids = [
-      52614,
-      52814,
-      53286,
+        52614,
+        52814,
+        53286,
     ];
 
     data['results'].forEach(r => {
-      if (r['status']['id'] == '3') {
-        inactive_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: inactiveIcon }).bindPopup(probePopup(r)));
-      } else {
-        var icon = activeIcon;
-        if (ambassador_probe_ids.includes(probeId(r)))
-          icon = ambassadorProbeIcon;
+        if (r['status']['id'] == '3') {
+            inactive_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: inactive_probe_icon }).bindPopup(probePopup(r)));
+        } else {
+            var icon = active_probe_icon;
+            if (ambassador_probe_ids.includes(probeId(r)))
+                icon = ambassador_probe_icon;
 
-        active_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: icon }).bindPopup(probePopup(r)));
-      }
-    })
+            active_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: icon }).bindPopup(probePopup(r)));
+        }
+    });
 
-    var mapsurfer    = L.tileLayer('https://api.openrouteservice.org/mapsurfer/{z}/{x}/{y}.png?api_key={orskey}', {attribution: 'Map data © <a href="https://maps.openrouteservice.org/">GIScience Research Group @ Heidelberg University</a>', orskey: '5b3ce3597851110001cf6248e6eeebc5abbe4825b1b19b3a321b7a15'}),
-        osm          = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>' }),
-        pirates      = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.pirates/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Pirates © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'}),
-        highcontrast = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.high-contrast/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Mapbox High Contrast © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'})
-        toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {attribution: 'Toner © <a href="https://maps.stamen.com/">Stamen Design</a>' })
-            ;
-
+    var mapsurfer    = L.tileLayer('https://api.openrouteservice.org/mapsurfer/{z}/{x}/{y}.png?api_key={orskey}', {attribution: 'Map data © <a href="https://maps.openrouteservice.org/">GIScience Research Group @ Heidelberg University</a>', orskey: '5b3ce3597851110001cf6248e6eeebc5abbe4825b1b19b3a321b7a15'});
+    var osm          = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>' });
+    var pirates      = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.pirates/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Pirates © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'});
+    var highcontrast = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.high-contrast/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Mapbox High Contrast © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'});
+    var toner        = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {attribution: 'Toner © <a href="https://maps.stamen.com/">Stamen Design</a>' });
 
     var markers_layer = L.markerClusterGroup();
-    var active_probes_layer = L.featureGroup.subGroup(markers_layer, active_probes);
+
+    var active_probes_layer   = L.featureGroup.subGroup(markers_layer, active_probes);
     var inactive_probes_layer = L.featureGroup.subGroup(markers_layer, inactive_probes);
 
     markers_layer.addLayer(active_probes_layer, inactive_probes_layer);
+
     var map = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer, inactive_probes_layer]});
 
     L.control.scale({maxWidth: 300}).addTo(map);
-    var baseMaps = {
-        "MapSurfer": mapsurfer,
-        "Mapbox High Contrast": highcontrast,
-        "OpenStreetMap France": osm,
-        "Pirate": pirates,
-        "Toner": toner
+
+    var base_layers = {
+        'MapSurfer':            mapsurfer,
+        'Mapbox High Contrast': highcontrast,
+        'OpenStreetMap France': osm,
+        'Pirate':               pirates,
+        'Toner':                toner
     };
-    L.control.layers(baseMaps, {'Active probes': active_probes_layer, 'Inactive probes': inactive_probes_layer}).addTo(map);
+    var overlays = {
+        'Active probes':   active_probes_layer,
+        'Inactive probes': inactive_probes_layer,
+    };
+    L.control.layers(base_layers, overlays).addTo(map);
 
     a = [-24.806681, -156.577148]
     b = [-6.904614, -132.93457]
