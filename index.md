@@ -74,9 +74,9 @@ function callback(data) {
     var inactive_probes_layer = L.featureGroup.subGroup(markers_layer, inactive_probes);
 
     markers_layer.addLayer(active_probes_layer, inactive_probes_layer);
-    var mymap = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer, inactive_probes_layer]});
+    var map = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer, inactive_probes_layer]});
 
-    L.control.scale({maxWidth: 300}).addTo(mymap);
+    L.control.scale({maxWidth: 300}).addTo(map);
     var baseMaps = {
         "MapSurfer": mapsurfer,
         "Mapbox High Contrast": highcontrast,
@@ -84,11 +84,11 @@ function callback(data) {
         "Pirate": pirates,
         "Toner": toner
     };
-    L.control.layers(baseMaps, {'Active probes': active_probes_layer, 'Inactive probes': inactive_probes_layer}).addTo(mymap);
+    L.control.layers(baseMaps, {'Active probes': active_probes_layer, 'Inactive probes': inactive_probes_layer}).addTo(map);
 
     a = [-24.806681, -156.577148]
     b = [-6.904614, -132.93457]
-    mymap.fitBounds([a, b]);
+    map.fitBounds([a, b]);
 }
 
 var script = document.createElement('script');
