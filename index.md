@@ -94,7 +94,7 @@ function callback(data) {
 
     markers_layer.addLayer(active_probes_layer, inactive_probes_layer);
 
-    var map = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer, inactive_probes_layer]});
+    var map = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer]});
 
     L.control.scale({maxWidth: 300}).addTo(map);
 
