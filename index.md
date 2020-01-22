@@ -111,8 +111,8 @@ function callback(data) {
     };
     L.control.layers(base_layers, overlays).addTo(map);
 
-    a = [-24.806681, -156.577148]
-    b = [-6.904614, -132.93457]
+    a = [-30, -158]
+    b = [-7, -132]
     map.fitBounds([a, b]);
 }
 
