@@ -125,9 +125,7 @@ function callback(data) {
     };
     L.control.layers(base_layers, overlays).addTo(map);
 
-    a = [-30, -158]
-    b = [-7, -132]
-    map.fitBounds([a, b]);
+    map.fitBounds(L.latLngBounds(active_probes.concat(inactive_probes).concat(abandoned_probes).map(e => e.getLatLng())));
 }
 
 var script = document.createElement('script');
