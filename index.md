@@ -34,6 +34,7 @@ function probePopup(probe) {
 function callback(data) {
     var active_probes = [];
     var inactive_probes = [];
+    var abandoned_probes = [];
 
     var active_probe_icon = L.icon({
         iconSize:      [25, 41],
@@ -51,6 +52,15 @@ function callback(data) {
         tooltipAnchor: [16, -28],
         shadowSize:    [41, 41],
         iconUrl:       'marker-inactive.png',
+        shadowUrl:     'marker-shadow.png',
+    });
+    var abandoned_probe_icon = L.icon({
+        iconSize:      [25, 41],
+        iconAnchor:    [12, 41],
+        popupAnchor:   [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize:    [41, 41],
+        iconUrl:       'marker-abandoned.png',
         shadowUrl:     'marker-shadow.png',
     });
     var ambassador_probe_icon = L.icon({
@@ -71,6 +81,8 @@ function callback(data) {
 
     data['results'].forEach(r => {
         if (r['status']['id'] == '3') {
+            abandoned_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: abandoned_probe_icon }).bindPopup(probePopup(r)));
+        } else if (r['status']['id'] == '2') {
             inactive_probes.push(L.marker([r['geometry']['coordinates']['1'], r['geometry']['coordinates']['0']], { icon: inactive_probe_icon }).bindPopup(probePopup(r)));
         } else {
             var icon = active_probe_icon;
@@ -91,10 +103,11 @@ function callback(data) {
 
     var active_probes_layer   = L.featureGroup.subGroup(markers_layer, active_probes);
     var inactive_probes_layer = L.featureGroup.subGroup(markers_layer, inactive_probes);
+    var abandoned_probes_layer = L.featureGroup.subGroup(markers_layer, abandoned_probes);
 
     markers_layer.addLayer(active_probes_layer, inactive_probes_layer);
 
-    var map = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer]});
+    var map = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer, inactive_probes_layer]});
 
     L.control.scale({maxWidth: 300}).addTo(map);
 
@@ -106,8 +119,9 @@ function callback(data) {
         'Toner':                toner
     };
     var overlays = {
-        'Active probes':   active_probes_layer,
-        'Inactive probes': inactive_probes_layer,
+        'Active probes':     active_probes_layer,
+        'Inactive probes':   inactive_probes_layer,
+        'Abandoned probles': abandoned_probes_layer,
     };
     L.control.layers(base_layers, overlays).addTo(map);
 
