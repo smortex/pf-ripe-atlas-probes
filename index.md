@@ -93,11 +93,12 @@ function callback(data) {
         }
     });
 
-    var mapsurfer    = L.tileLayer('https://api.openrouteservice.org/mapsurfer/{z}/{x}/{y}.png?api_key={orskey}', {attribution: 'Map data © <a href="https://maps.openrouteservice.org/">GIScience Research Group @ Heidelberg University</a>', orskey: '5b3ce3597851110001cf6248e6eeebc5abbe4825b1b19b3a321b7a15'});
-    var osm          = L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', { attribution: 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>' });
-    var pirates      = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.pirates/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Pirates © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'});
-    var highcontrast = L.tileLayer('https://{s}.tiles.mapbox.com/v4/mapbox.high-contrast/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic21vcnRleCIsImEiOiJjams2eDRlNngxeG9zM3BtcTZ3cWV2aGE1In0.QE3nSWsjqOcjcZIhnX7eXg', {attribution: 'Mapbox High Contrast © <a href="https://www.mapbox.com/about/maps/">Mapbox</a>'});
-    var toner        = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {attribution: 'Toner © <a href="https://maps.stamen.com/">Stamen Design</a>' });
+    var common_attribution = 'Map data © <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a> | Tiles: ';
+
+    var mobile_atlas  = L.tileLayer('https://tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey=f001bec5e17447b0b597e5a8e766bbf2', {attribution: common_attribution + 'Mobile Atlas © <a href="https://thunderforest.com/">Thunderforest</a>'});
+    var neighbourhood = L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=f001bec5e17447b0b597e5a8e766bbf2', {attribution: common_attribution + 'Neighbourhood © <a href="https://thunderforest.com/">Thunderforest</a>'});
+    var pioneer       = L.tileLayer('https://tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey=f001bec5e17447b0b597e5a8e766bbf2', {attribution: common_attribution + 'Pioneer © <a href="https://thunderforest.com/">Thunderforest</a>'});
+    var spinal_map    = L.tileLayer('https://tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=f001bec5e17447b0b597e5a8e766bbf2', {attribution: common_attribution + 'Spinal Map © <a href="https://thunderforest.com/">Thunderforest</a>'});
 
     var markers_layer = L.markerClusterGroup();
 
@@ -107,16 +108,15 @@ function callback(data) {
 
     markers_layer.addLayer(active_probes_layer, inactive_probes_layer);
 
-    var map = L.map('map', {layers: [mapsurfer, markers_layer, active_probes_layer, inactive_probes_layer]});
+    var map = L.map('map', {layers: [mobile_atlas, markers_layer, active_probes_layer, inactive_probes_layer]});
 
     L.control.scale({maxWidth: 300}).addTo(map);
 
     var base_layers = {
-        'MapSurfer':            mapsurfer,
-        'Mapbox High Contrast': highcontrast,
-        'OpenStreetMap France': osm,
-        'Pirate':               pirates,
-        'Toner':                toner
+        'Mobile Atlas':  mobile_atlas,
+        'Neighbourhood': neighbourhood,
+        'Pioneer':       pioneer,
+        'Spinal Map':    spinal_map,
     };
     var overlays = {
         'Active probes':     active_probes_layer,
